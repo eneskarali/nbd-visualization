@@ -289,6 +289,31 @@ public class app_page extends javax.swing.JFrame {
         return label;
     }
 
-    
+    class drawChart extends Thread {
+
+        Dataset barData, lineData;
+        int range;
+
+        public drawChart(Dataset barData, Dataset lineData, int range) {
+            this.barData = barData;
+            this.lineData = lineData;
+            this.range = range;
+        }
+
+        @Override
+        public void run() {
+            Chart2D chart = getChart2D(barData, lineData, range);
+            chart.pack();
+
+            Dimension size = new Dimension(500, 300);
+            chart.setSize(size);
+            chart.setPreferredSize(size);
+
+            BufferedImage chartImage = chart.getImage();
+
+            jLabel1.setIcon(new ImageIcon(chartImage));
+        }
+
+    }
 
 }
