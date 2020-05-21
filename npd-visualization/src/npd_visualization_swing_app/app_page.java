@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Paint;
+import java.awt.SystemColor;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -29,6 +31,14 @@ import net.sourceforge.chart2d.LBChart2D;
 import net.sourceforge.chart2d.LegendProperties;
 import net.sourceforge.chart2d.MultiColorsProperties;
 import net.sourceforge.chart2d.Object2DProperties;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.util.ShadowGenerator;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 /**
  *
@@ -36,7 +46,7 @@ import net.sourceforge.chart2d.Object2DProperties;
  */
 public class app_page extends javax.swing.JFrame {
 
-    int n = 42;
+    int n = 4;
     int x = 4;
     double p = 0.2;
     double q = 0.8;
@@ -48,10 +58,10 @@ public class app_page extends javax.swing.JFrame {
      */
     public app_page() throws IOException {
         initComponents();
-
-        double comb = factorial(n - 1) / (factorial(x - 1) * factorial(n - x));
-        double res = comb * Math.pow(p, (double) x) * Math.pow(q, (double) n - (double) x);
-        System.out.println(res);
+        
+        this.getContentPane().setBackground(Color.WHITE);
+        drawChart d = new drawChart(x);
+        d.start();
 
     }
 
@@ -104,11 +114,7 @@ public class app_page extends javax.swing.JFrame {
                 .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(189, 189, 189))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(226, 226, 226)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -118,23 +124,27 @@ public class app_page extends javax.swing.JFrame {
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(60, 60, 60)
                 .addComponent(jButton1)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addGap(389, 389, 389))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(97, 97, 97)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(127, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel2)
-                .addGap(51, 51, 51)
+                .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
                     .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(147, 147, 147))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(69, 69, 69))
         );
 
         pack();
@@ -199,91 +209,12 @@ public class app_page extends javax.swing.JFrame {
         return result;
     }
 
-    private static Chart2D getChart2D(Dataset barData, Dataset lineData, int range) {
-
-        Object2DProperties object2DProps = new Object2DProperties();
-        object2DProps.setObjectTitleText("Negative Binomial Distribution");
-
-        //Configure chart properties
-        Chart2DProperties chart2DProps = new Chart2DProperties();
-        chart2DProps.setChartDataLabelsPrecision(1);
-
-        //Configure legend properties
-        LegendProperties legendProps = new LegendProperties();
-        String[] legendLabels
-                = {"", ""};
-        legendProps.setLegendLabelsTexts(legendLabels);
-
-        //Configure graph chart properties
-        GraphChart2DProperties graphChart2DProps = new GraphChart2DProperties();
-        String[] labelsAxisLabels = genereteLabels(range);
-        graphChart2DProps.setLabelsAxisLabelsTexts(labelsAxisLabels);
-        graphChart2DProps.setLabelsAxisTitleText("x");
-        graphChart2DProps.setNumbersAxisTitleText("P(X=x)");
-        graphChart2DProps.setLabelsAxisTicksAlignment(graphChart2DProps.CENTERED);
-        Font font = new Font("Verdana", Font.BOLD, 22);
-        graphChart2DProps.setNumbersAxisTitleFontStyle(font.getStyle());
-        graphChart2DProps.setLabelsAxisTitleFontStyle(font.getStyle());
-
-        //Configure graph properties for line overlay
-        GraphProperties graphPropsLine = new GraphProperties();
-        graphPropsLine.setGraphBarsExistence(false);
-        graphPropsLine.setGraphLinesExistence(true);
-        graphPropsLine.setGraphAllowComponentAlignment(true);
-
-        //Configure dataset for line overlay
-        Dataset datasetLine = lineData;
-        datasetLine.set(0, 0, 0, 20.0f);
-        datasetLine.set(0, 1, 0, 40.0f);
-        datasetLine.set(0, 2, 0, 50.0f);
-        datasetLine.set(0, 3, 0, 0.0f);
-
-        //Configure graph component colors for line overlay
-        MultiColorsProperties multiColorsPropsLine = new MultiColorsProperties();
-        multiColorsPropsLine.setColorsType(multiColorsPropsLine.PASTEL);
-
-        //Configure graph properties for bar underlay
-        GraphProperties graphPropsBars = new GraphProperties();
-        graphPropsBars.setGraphOutlineComponentsExistence(true);
-        graphPropsBars.setGraphComponentsAlphaComposite(graphPropsBars.ALPHA_COMPOSITE_MILD);
-
-        //Configure dataset for bar underlay
-        Dataset datasetBars = barData;
-        datasetBars.set(0, 0, 0, 20.0f);
-        datasetBars.set(0, 1, 0, 40.0f);
-        datasetBars.set(0, 2, 0, 50.0f);
-        datasetBars.set(0, 3, 0, 0.0f);
-
-        //Configure graph component colors for bar underlay
-        MultiColorsProperties multiColorsPropsBars = new MultiColorsProperties();
-
-        //Configure chart
-        LBChart2D chart2D = new LBChart2D();
-        chart2D.setObject2DProperties(object2DProps);
-        chart2D.setChart2DProperties(chart2DProps);
-        chart2D.setLegendProperties(legendProps);
-        chart2D.setGraphChart2DProperties(graphChart2DProps);
-        chart2D.addGraphProperties(graphPropsLine);
-        chart2D.addDataset(datasetLine);
-        chart2D.addMultiColorsProperties(multiColorsPropsLine);
-        chart2D.addGraphProperties(graphPropsBars);
-        chart2D.addDataset(datasetBars);
-        chart2D.addMultiColorsProperties(multiColorsPropsBars);
-
-        //Optional validation:  Prints debug messages if invalid only.
-        if (!chart2D.validate(false)) {
-            chart2D.validate(true);
-        }
-
-        //<-- End Chart2D configuration -->
-        return chart2D;
-    }
-
     public static String[] genereteLabels(int range) {
         String[] label = new String[range];
 
         for (int i = 0; i < range; i++) {
             label[i] = String.valueOf(i);
+            System.out.println(label[i]);
         }
 
         return label;
@@ -291,27 +222,68 @@ public class app_page extends javax.swing.JFrame {
 
     class drawChart extends Thread {
 
-        Dataset barData, lineData;
-        int range;
+        DefaultCategoryDataset dataset;
+        int k, r;
 
-        public drawChart(Dataset barData, Dataset lineData, int range) {
-            this.barData = barData;
-            this.lineData = lineData;
-            this.range = range;
+        public drawChart(int r) {
+            this.dataset = new DefaultCategoryDataset();
+            this.r = r;
+            this.k = n;
         }
 
         @Override
         public void run() {
-            Chart2D chart = getChart2D(barData, lineData, range);
-            chart.pack();
+            int i = 0;
+            while (true) {
+                double comb = factorial(n - 1) / (factorial(r - 1) * factorial(n - x));
+                double res = comb * Math.pow(p, (double) x) * Math.pow(q, (double) n - (double) x);
+                System.out.println((Float.parseFloat(String.valueOf(res * 100))));
+                dataset.setValue(res, "1", String.valueOf(i));
+                i++;
+                n++;
+                if (res <= 0.0005) {
+                    break;
+                }
+            }
 
-            Dimension size = new Dimension(500, 300);
-            chart.setSize(size);
-            chart.setPreferredSize(size);
+            JFreeChart chart = ChartFactory.createBarChart(
+                    "Negative Binomial Distribution", //Chart title
+                    "x", //Domain axis label
+                    "P(X=x)", //Range axis label
+                    dataset, //Chart Data 
+                    PlotOrientation.VERTICAL, // orientation
+                    false, // include legend?
+                    true, // include tooltips?
+                    false // include URLs?
+            );
 
-            BufferedImage chartImage = chart.getImage();
+            CategoryPlot cplot = (CategoryPlot) chart.getPlot();
+            CategoryItemRenderer barColor = new customRenderer( 4);
+            cplot.setRenderer(barColor);
+            
+
+            BufferedImage chartImage = chart.createBufferedImage(1200, 500);
 
             jLabel1.setIcon(new ImageIcon(chartImage));
+        }
+
+        class customRenderer extends BarRenderer {
+
+            int index;
+
+            public customRenderer( int index) {
+                this.index = index;
+            }
+
+            @Override
+            public Paint getItemPaint(final int row, final int column) {
+                if (column == index) {
+                    return Color.blue;
+                } else {
+                    return Color.RED;
+                }
+            }
+
         }
 
     }
