@@ -51,6 +51,10 @@ public class app_page extends javax.swing.JFrame {
     int x = 4;
     double p = 0.2;
     double q = 0.8;
+    boolean isCdf = false;
+    boolean isPdf = true;
+    int selected = -1;
+    double eX = 0;
 
     /**
      * Creates new form app_page
@@ -61,7 +65,8 @@ public class app_page extends javax.swing.JFrame {
         initComponents();
         Color c = new Color(239, 239, 239);
         this.getContentPane().setBackground(c);
-        
+        this.setLocationRelativeTo(null);
+
         jTextField3.setEnabled(false);
         jTextField4.setEnabled(false);
         jComboBox1.setEnabled(false);
@@ -90,6 +95,9 @@ public class app_page extends javax.swing.JFrame {
         jComboBox1 = new javax.swing.JComboBox<>();
         jTextField4 = new javax.swing.JTextField();
         jComboBox2 = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -120,17 +128,73 @@ public class app_page extends javax.swing.JFrame {
         });
 
         jTextField3.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jTextField3.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                jTextField3CaretUpdate(evt);
+            }
+        });
+        jTextField3.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+                jTextField3CaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                jTextField3İnputMethodTextChanged(evt);
+            }
+        });
+        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField3ActionPerformed(evt);
+            }
+        });
+        jTextField3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField3KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField3KeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField3KeyTyped(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jLabel5.setText("x =");
 
         jComboBox1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "P(X = x) =", "P(X <= x) =", "P(X >= x) =" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         jTextField4.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField4ActionPerformed(evt);
+            }
+        });
 
         jComboBox2.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "pdf", "cdf" }));
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(51, 102, 255));
+        jLabel6.setText("SD(x) =");
+
+        jLabel7.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(51, 102, 255));
+        jLabel7.setText("μ = E(X) =");
+
+        jLabel8.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 102, 204));
+        jLabel8.setText("Var(x) =");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,44 +202,50 @@ public class app_page extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(97, 97, 97)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(127, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jTextField3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(54, 54, 54)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1)))
-                .addGap(330, 330, 330))
+                        .addComponent(jButton1))
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(264, 264, 264))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(197, 197, 197)
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addComponent(jLabel2)
-                .addGap(54, 54, 54)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -183,15 +253,20 @@ public class app_page extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(jButton1)
                     .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(69, 69, 69))
+                .addGap(44, 44, 44)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel7))
+                .addGap(44, 44, 44))
         );
 
         pack();
@@ -199,26 +274,55 @@ public class app_page extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String r = jTextField1.getText();
-        String pS = jTextField2.getText();
-        if (r.equals("") || pS.equals("")) {
-            JOptionPane.showMessageDialog(this, "r ve p değerleri girilmeli!");
-        } else if(Double.parseDouble(pS) < 0 || Double.parseDouble(pS) > 1) {
-            JOptionPane.showMessageDialog(this, "0 <= p <= 1 arasında değer alabilir!");
-        } else {
-            n = Integer.parseInt(jTextField1.getText());
-        x = Integer.parseInt(jTextField1.getText());
-        p =  Double.parseDouble(jTextField2.getText());
-        drawChart d = new drawChart(x);
-        d.start();
-        
-        jTextField3.setEnabled(true);
-        jTextField4.setEnabled(true);
-        jComboBox1.setEnabled(true);
-        jLabel5.setEnabled(true);
-        }
-        
+        getAndDraw();
+
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        // TODO add your handling code here:
+        isPdf = jComboBox2.getSelectedIndex() == 0;
+        isCdf = jComboBox2.getSelectedIndex() == 1;
+        getAndDraw();
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3ActionPerformed
+
+    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField4ActionPerformed
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+        getAndDraw();
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jTextField3CaretPositionChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextField3CaretPositionChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3CaretPositionChanged
+
+    private void jTextField3İnputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_jTextField3İnputMethodTextChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3İnputMethodTextChanged
+
+    private void jTextField3CaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_jTextField3CaretUpdate
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3CaretUpdate
+
+    private void jTextField3KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField3KeyTyped
+
+    private void jTextField3KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyPressed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jTextField3KeyPressed
+
+    private void jTextField3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField3KeyReleased
+        // TODO add your handling code here:
+        getAndDraw();
+    }//GEN-LAST:event_jTextField3KeyReleased
 
     /**
      * @param args the command line arguments
@@ -268,6 +372,9 @@ public class app_page extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
@@ -309,18 +416,48 @@ public class app_page extends javax.swing.JFrame {
         @Override
         public void run() {
             int i = 0;
+            double res = 0.0;
+            eX = 0.0;
+            double selectedVal = 0.0;
+            double var = 0.0;
             while (true) {
                 double comb = factorial(n - 1) / (factorial(r - 1) * factorial(n - x));
-                double res = comb * Math.pow(p, (double) x) * Math.pow(q, (double) n - (double) x);
-                System.out.println((Float.parseFloat(String.valueOf(res * 100))));
+                if (isPdf) {
+                    res = comb * Math.pow(p, (double) x) * Math.pow(q, (double) n - (double) x);
+                    eX += (double) i * res;
+                } else if (isCdf) {
+                    res += comb * Math.pow(p, (double) x) * Math.pow(q, (double) n - (double) x);
+                }
+                if (selected >= 0 && i == selected && jComboBox1.getSelectedIndex() == 0) {
+                    selectedVal = res;
+                    jTextField4.setText(String.valueOf(selectedVal).substring(0, 6));
+                } else if (selected >= 0 && i <= selected && jComboBox1.getSelectedIndex() == 1) {
+                    selectedVal += res;
+                    jTextField4.setText(String.valueOf(selectedVal).substring(0, 6));
+                } else if (selected >= 0 && i >= selected && jComboBox1.getSelectedIndex() == 2) {
+                    selectedVal += res;
+                    jTextField4.setText(String.valueOf(selectedVal).substring(0, 6));
+                }
+
+                System.out.println((Float.parseFloat(String.valueOf(res))));
                 dataset.setValue(res, "1", String.valueOf(i));
                 i++;
                 n++;
-                if (res <= 0.0004 && i > 50) {
+                if (i > 55 && isPdf) {
+                    break;
+                } else if (i > 55 && isCdf) {
                     break;
                 }
             }
-
+            if(isPdf){
+                jLabel7.setText("μ = E(X) = "+String.valueOf(eX));
+            }
+            
+            var = r*((double)1.0-p)/Math.pow(p, 2.0);
+            jLabel8.setText("Var(x) = "+String.valueOf(var));
+            
+            jLabel6.setText("SD(x) = "+String.valueOf(Math.sqrt(var)));
+            
             JFreeChart chart = ChartFactory.createBarChart(
                     "Negative Binomial Distribution", //Chart title
                     "x", //Domain axis label
@@ -333,7 +470,7 @@ public class app_page extends javax.swing.JFrame {
             );
 
             CategoryPlot cplot = (CategoryPlot) chart.getPlot();
-            CategoryItemRenderer barColor = new customRenderer(4);
+            CategoryItemRenderer barColor = new customRenderer(selected);
             cplot.setRenderer(barColor);
 
             BufferedImage chartImage = chart.createBufferedImage(1200, 500);
@@ -351,15 +488,75 @@ public class app_page extends javax.swing.JFrame {
 
             @Override
             public Paint getItemPaint(final int row, final int column) {
-                if (column == index) {
-                    return Color.blue;
+                if (jComboBox1.getSelectedIndex() == 0) {
+                    if (column == index) {
+                        Color c = new Color(251, 99, 99);
+                        return c;
+                    } else {
+                        Color c = new Color(66, 135, 245);
+                        return c;
+                    }
+                } else if (jComboBox1.getSelectedIndex() == 1) {
+                    if (column <= index) {
+                        Color c = new Color(251, 99, 99);
+                        return c;
+                    } else {
+                        Color c = new Color(66, 135, 245);
+                        return c;
+                    }
+                } else if (jComboBox1.getSelectedIndex() == 2) {
+                    if (column >= index) {
+                        Color c = new Color(251, 99, 99);
+                        return c;
+                    } else {
+                        Color c = new Color(66, 135, 245);
+                        return c;
+                    }
                 } else {
-                    return Color.RED;
+
+                    Color c = new Color(66, 135, 245);
+                    return c;
                 }
             }
 
         }
 
+    }
+
+    public void getAndDraw() {
+        String r = jTextField1.getText();
+        String pS = jTextField2.getText();
+        if (r.equals("") || pS.equals("")) {
+            JOptionPane.showMessageDialog(this, "r ve p değerleri girilmeli!");
+        } else if (Double.parseDouble(pS) < 0 || Double.parseDouble(pS) > 1) {
+            JOptionPane.showMessageDialog(this, "0 <= p <= 1 arasında değer alabilir!");
+        } else {
+            n = Integer.parseInt(jTextField1.getText());
+            x = Integer.parseInt(jTextField1.getText());
+            p = Double.parseDouble(jTextField2.getText());
+            drawChart d = new drawChart(x);
+            d.start();
+
+            jTextField3.setEnabled(true);
+            jTextField4.setEnabled(true);
+            jComboBox1.setEnabled(true);
+            jLabel5.setEnabled(true);
+
+            if (!jTextField3.getText().equals("")) {
+                try {
+                    int s = Integer.parseInt(jTextField3.getText());
+                    selected = s;
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+
+            } else {
+                selected = -1;
+                jTextField4.setText("");
+
+            }
+
+        }
     }
 
 }
